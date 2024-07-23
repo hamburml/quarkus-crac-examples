@@ -1,74 +1,54 @@
-# crac1
+### Anwendung starten
 
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
+- Endpunkt cat aufrufen
+- Log ca 700 ms
+- danach nochmal, 100 ms
+- init von mp rest dauert ca 600 ms
 
-If you want to learn more about Quarkus, please visit its website: <https://quarkus.io/>.
-
-## Running the application in dev mode
-
-You can run your application in dev mode that enables live coding using:
-
-```shell script
-./mvnw compile quarkus:dev
+```
+2024-07-23 20:06:55,917 INFO  [de.ham.cra.res.CatResource] (executor-thread-1) getCat start 2024-07-23T18:06:55.917653105Z
+2024-07-23 20:06:55,931 INFO  [de.ham.cra.ser.CatService] (executor-thread-1) getRandomFact start 2024-07-23T18:06:55.931827614Z
+2024-07-23 20:06:56,628 INFO  [de.ham.cra.ser.CatService] (executor-thread-1) getCat after 2024-07-23T18:06:56.628444428Z
+2024-07-23 20:06:56,628 INFO  [de.ham.cra.ser.CatService] (executor-thread-1) getCat duration 696
+2024-07-23 20:06:56,629 INFO  [de.ham.cra.res.CatResource] (executor-thread-1) getCat after 2024-07-23T18:06:56.629223112Z
+2024-07-23 20:06:56,629 INFO  [de.ham.cra.res.CatResource] (executor-thread-1) getCat duration 711
+2024-07-23 20:07:08,925 INFO  [de.ham.cra.res.CatResource] (executor-thread-1) getCat start 2024-07-23T18:07:08.925620468Z
+2024-07-23 20:07:08,926 INFO  [de.ham.cra.ser.CatService] (executor-thread-1) getRandomFact start 2024-07-23T18:07:08.926038760Z
+2024-07-23 20:07:09,042 INFO  [de.ham.cra.ser.CatService] (executor-thread-1) getCat after 2024-07-23T18:07:09.042054766Z
+2024-07-23 20:07:09,042 INFO  [de.ham.cra.ser.CatService] (executor-thread-1) getCat duration 116
+2024-07-23 20:07:09,042 INFO  [de.ham.cra.res.CatResource] (executor-thread-1) getCat after 2024-07-23T18:07:09.042643991Z
+2024-07-23 20:07:09,042 INFO  [de.ham.cra.res.CatResource] (executor-thread-1) getCat duration 117
 ```
 
-> **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at <http://localhost:8080/q/dev/>.
-
-## Packaging and running the application
-
-The application can be packaged using:
-
-```shell script
-./mvnw package
+Mit startup event und request dahin...
+```
+2024-07-23 20:11:03,651 INFO  [de.ham.cra.ser.CatService] (Quarkus Main Thread) StartupEvent: {"data":["Both humans and cats have identical regions in the brain responsible for emotion."]}
+2024-07-23 20:11:03,670 INFO  [io.quarkus] (Quarkus Main Thread) crac1 1.0.0-SNAPSHOT on JVM (powered by Quarkus 3.12.3) started in 1.662s. Listening on: http://localhost:8080
+2024-07-23 20:11:03,670 INFO  [io.quarkus] (Quarkus Main Thread) Profile dev activated. Live Coding activated.
+2024-07-23 20:11:03,671 INFO  [io.quarkus] (Quarkus Main Thread) Installed features: [cdi, rest, rest-client, rest-client-jackson, rest-jackson, smallrye-context-propagation, smallrye-openapi, swagger-ui, vertx]
+2024-07-23 20:11:16,940 INFO  [de.ham.cra.res.CatResource] (executor-thread-1) getCat start 2024-07-23T18:11:16.940703214Z
+2024-07-23 20:11:16,941 INFO  [de.ham.cra.ser.CatService] (executor-thread-1) getRandomFact start 2024-07-23T18:11:16.941026676Z
+2024-07-23 20:11:17,096 INFO  [de.ham.cra.ser.CatService] (executor-thread-1) getCat after 2024-07-23T18:11:17.096214303Z
+2024-07-23 20:11:17,096 INFO  [de.ham.cra.ser.CatService] (executor-thread-1) getCat duration 155
+2024-07-23 20:11:17,096 INFO  [de.ham.cra.res.CatResource] (executor-thread-1) getCat after 2024-07-23T18:11:17.096897045Z
+2024-07-23 20:11:17,097 INFO  [de.ham.cra.res.CatResource] (executor-thread-1) getCat duration 156
 ```
 
-It produces the `quarkus-run.jar` file in the `target/quarkus-app/` directory.
-Be aware that it’s not an _über-jar_ as the dependencies are copied into the `target/quarkus-app/lib/` directory.
+### Anwendung starten
 
-The application is now runnable using `java -jar target/quarkus-app/quarkus-run.jar`.
+/quarkus-crac-examples/crac1/target/quarkus-app$ java -XX:CRaCCheckpointTo=cr -jar quarkus-run.jar
 
-If you want to build an _über-jar_, execute the following command:
+### im zweiten Terminal
 
-```shell script
-./mvnw package -Dquarkus.package.jar.type=uber-jar
-```
+jcmd quarkus-run.jar JDK.checkpoint
 
-The application, packaged as an _über-jar_, is now runnable using `java -jar target/*-runner.jar`.
+### Fehler
 
-## Creating a native executable
+....
+(00.003985) Unlock network
+(00.003990) Unfreezing tasks into 1
+(00.003995) 	Unseizing 15763 into 1
+(00.004001) Error (compel/src/lib/infect.c:358): Unable to detach from 15763: No such process
+(00.004009) Error (criu/cr-dump.c:2063): Dumping FAILED.
 
-You can create a native executable using:
-
-```shell script
-./mvnw package -Dnative
-```
-
-Or, if you don't have GraalVM installed, you can run the native executable build in a container using:
-
-```shell script
-./mvnw package -Dnative -Dquarkus.native.container-build=true
-```
-
-You can then execute your native executable with: `./target/crac1-1.0.0-SNAPSHOT-runner`
-
-If you want to learn more about building native executables, please consult <https://quarkus.io/guides/maven-tooling>.
-
-## Related Guides
-
-- REST ([guide](https://quarkus.io/guides/rest)): A Jakarta REST implementation utilizing build time processing and Vert.x. This extension is not compatible with the quarkus-resteasy extension, or any of the extensions that depend on it.
-- REST Client ([guide](https://quarkus.io/guides/rest-client)): Call REST services
-- REST Jackson ([guide](https://quarkus.io/guides/rest#json-serialisation)): Jackson serialization support for Quarkus REST. This extension is not compatible with the quarkus-resteasy extension, or any of the extensions that depend on it
-
-## Provided Code
-
-### REST Client
-
-Invoke different services through REST with JSON
-
-[Related guide section...](https://quarkus.io/guides/rest-client)
-
-### REST
-
-Easily start your REST Web Services
-
-[Related guide section...](https://quarkus.io/guides/getting-started-reactive#reactive-jax-rs-resources)
+Laut Kommentar in https://foojay.io/today/springboot-3-2-crac/ fehlen Zugriffsrechte auf criu, hab chmod 777, geht nicht. 
